@@ -13,10 +13,27 @@ module ActionMailbox
         end
 
         def content
-          Aws::S3::Client.new(region: region, access_key_id: access_key_id, secret_access_key: secret_access_key)
-                         .get_object(key: key, bucket: bucket)
-                         .body
-                         .string
+          s3_client = Aws::S3::Client.new(
+            region: region,
+            access_key_id: access_key_id,
+            secret_access_key: secret_access_key
+          )
+
+          s3_object = s3_client.get_object(key: key, bucket: bucket)
+
+          if (kms_cmk_id = JSON.parse(s3_object.metadata['x-amz-matdesc'])['kms_cmk_id'])
+            s3_encryption_client = Aws::S3::EncryptionV2::Client.new(
+              client: s3_client,
+              kms_key_id: kms_cmk_id,
+              key_wrap_schema: :kms_context,
+              content_encryption_schema: :aes_gcm_no_padding,
+              security_profile: :v2_and_legacy # SES currently uses V1 encryption schema to encrypt emails
+            )
+
+            s3_object = s3_encryption_client.get_object(key: key, bucket: bucket)
+          end
+
+          s3_object.body.string
         end
 
         private
