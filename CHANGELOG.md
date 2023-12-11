@@ -6,7 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [unreleased]
 
+- Don't error in case object is not encrypted
+
 ## [0.1.1]
 
 - Add support for _Amazon SES/S3/SNS_ integration with _Rails ActionMailbox_
-

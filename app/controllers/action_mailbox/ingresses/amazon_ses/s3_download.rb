@@ -21,7 +21,10 @@ module ActionMailbox
 
           s3_object = s3_client.get_object(key: key, bucket: bucket)
 
-          if (kms_cmk_id = JSON.parse(s3_object.metadata['x-amz-matdesc'])['kms_cmk_id'])
+          amz_matdesc = s3_object.metadata["x-amz-matdesc"]
+          kms_cmk_id = JSON.parse(amz_matdesc)["kms_cmk_id"] if amz_matdesc
+
+          if kms_cmk_id
             s3_encryption_client = Aws::S3::EncryptionV2::Client.new(
               client: s3_client,
               kms_key_id: kms_cmk_id,
