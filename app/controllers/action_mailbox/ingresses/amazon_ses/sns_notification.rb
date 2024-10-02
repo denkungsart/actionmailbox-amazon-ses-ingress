@@ -33,8 +33,8 @@ module ActionMailbox
           if receipt? && content_in_s3?
             raw_email = S3Download.new(bucket: bucket, key: key, region: region).content
 
-            # Prepend recipients in BCC
-            recipients.each { |to| raw_email.prepend("X-Original-To: ", to, "\n") }
+            # Prepend BCC recipients to allow successful routing.
+            bcc_recipients.each { |to| raw_email.prepend("X-Original-To: ", to, "\n") }
 
             return raw_email
           end
@@ -78,8 +78,8 @@ module ActionMailbox
             message.fetch(:notificationType) == "Received"
           end
 
-          def recipients
-            message.fetch(:mail).fetch(:destination)
+          def bcc_recipients
+            message.fetch(:mail).fetch(:commonHeaders).fetch(:bcc, []).map { |email| Mail::Address.new(email).address }
           end
 
           def confirmation_response
