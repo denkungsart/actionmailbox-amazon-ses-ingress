@@ -81,7 +81,7 @@ module ActionMailbox
           end
 
           def recipients
-            message.fetch(:mail).fetch(:destination)
+            message.fetch(:receipt).fetch(:recipients)
           end
 
           def confirmation_response
