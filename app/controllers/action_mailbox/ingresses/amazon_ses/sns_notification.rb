@@ -31,8 +31,6 @@ module ActionMailbox
 
         def message_content
           if receipt? && content_in_s3?
-            Rails.logger.warn "AmazonSes::Ingress #{message.fetch(:mail, {}).except(:headers).inspect}"
-
             raw_email = S3Download.new(bucket: bucket, key: key, region: region).content
 
             # Prepend recipients in BCC
