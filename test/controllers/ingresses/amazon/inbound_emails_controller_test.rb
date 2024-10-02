@@ -33,7 +33,31 @@ class ActionMailbox::Ingresses::AmazonSes::InboundEmailsControllerTest < ActionD
     assert_response :no_content
 
     inbound_email = ActionMailbox::InboundEmail.last
-    assert_equal s3_email, inbound_email.raw_email.download
+
+    assert_includes inbound_email.raw_email.download, s3_email
+    assert_includes inbound_email.mail.recipients, "test@test.example.com"
+  end
+
+  test "receiving an inbound email with BCC" do
+    inbound_s3 = json_fixture("inbound_email_s3")
+    s3_email = fixture("bcc_email.txt")
+
+    Aws.config[:s3] = {
+      stub_responses: {
+        head_object: { content_length: s3_email.size, parts_count: 1 },
+        get_object: { body: s3_email }
+      }
+    }
+
+    assert_difference -> { ActionMailbox::InboundEmail.count }, +1 do
+      post rails_amazon_ses_inbound_emails_url, params: inbound_s3, as: :json
+    end
+
+    assert_response :no_content
+
+    inbound_email = ActionMailbox::InboundEmail.last
+    assert_includes inbound_email.raw_email.download, s3_email
+    assert_includes inbound_email.mail.recipients, "test@icts-oasis-aya.aws.cloud.uiowa.edu"
   end
 
   test "accepting subscriptions to recognized topics" do
