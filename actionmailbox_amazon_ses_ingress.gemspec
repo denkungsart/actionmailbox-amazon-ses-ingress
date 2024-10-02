@@ -3,7 +3,7 @@ require_relative "lib/actionmailbox_amazon_ses_ingress/version"
 Gem::Specification.new do |spec|
   spec.name        = "actionmailbox_amazon_ses_ingress"
   spec.version     = ActionmailboxAmazonSesIngress::VERSION
-  spec.authors     = ["Sunil Sharma"]
+  spec.authors     = ["Denkungsart GmbH"]
   spec.summary     = "Add Amazon SES Ingress to ActionMailbox"
 
   spec.required_ruby_version = ">= 3.1.0"

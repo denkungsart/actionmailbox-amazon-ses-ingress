@@ -45,5 +45,4 @@ production:
 
 
 ## Credits
-Sunil Sharma
 This gem was made possible by the contributions of *Bob Farrell*, *Chris Ortman* and *Marco Borromeo* to this [pull request](https://github.com/rails/rails/pull/39364).
