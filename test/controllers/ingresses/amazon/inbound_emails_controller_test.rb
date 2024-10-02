@@ -34,12 +34,12 @@ class ActionMailbox::Ingresses::AmazonSes::InboundEmailsControllerTest < ActionD
 
     inbound_email = ActionMailbox::InboundEmail.last
 
-    assert_equal inbound_email.raw_email.download, s3_email
+    assert_includes inbound_email.raw_email.download, s3_email
     assert_includes inbound_email.mail.recipients, "test@test.example.com"
   end
 
   test "receiving an inbound email with BCC" do
-    inbound_s3 = json_fixture("inbound_email_bcc")
+    inbound_s3 = json_fixture("inbound_email_s3")
     s3_email = fixture("bcc_email.txt")
 
     Aws.config[:s3] = {
@@ -50,13 +50,7 @@ class ActionMailbox::Ingresses::AmazonSes::InboundEmailsControllerTest < ActionD
     }
 
     assert_difference -> { ActionMailbox::InboundEmail.count }, +1 do
-      # Need to disable verification of signature as I tampered with the fixture.
-      mock_verifier = ::Minitest::Mock.new
-      mock_verifier.expect(:authentic?, true, [->(x) { x.is_a?(String) }])
-
-      Aws::SNS::MessageVerifier.stub(:new, mock_verifier) do
-        post rails_amazon_ses_inbound_emails_url, params: inbound_s3, as: :json
-      end
+      post rails_amazon_ses_inbound_emails_url, params: inbound_s3, as: :json
     end
 
     assert_response :no_content
