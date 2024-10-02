@@ -30,7 +30,14 @@ module ActionMailbox
         end
 
         def message_content
-          return S3Download.new(bucket: bucket, key: key, region: region).content if receipt? && content_in_s3?
+          if receipt? && content_in_s3?
+            raw_email = S3Download.new(bucket: bucket, key: key, region: region).content
+
+            # Prepend recipients in BCC
+            recipients.each { |to| raw_email.prepend("X-Original-To: ", to, "\n") }
+
+            return raw_email
+          end
 
           raise MessageContentError, "Incoming emails must have notificationType `Received` and must be stored to S3"
         end
@@ -69,6 +76,10 @@ module ActionMailbox
 
           def receipt?
             message.fetch(:notificationType) == "Received"
+          end
+
+          def recipients
+            message.fetch(:mail).fetch(:destination)
           end
 
           def confirmation_response
