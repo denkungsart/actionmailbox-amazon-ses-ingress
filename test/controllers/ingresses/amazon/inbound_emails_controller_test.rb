@@ -102,7 +102,7 @@ class ActionMailbox::Ingresses::AmazonSes::InboundEmailsControllerTest < ActionD
 
   private
     def fixture(name)
-      file_fixture("../files/amazon/#{name}").read
+      file_fixture("amazon/#{name}").read
     end
 
     def json_fixture(name)
