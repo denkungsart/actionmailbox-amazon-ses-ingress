@@ -22,5 +22,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'aws-sdk-s3', '~> 1.134'
 
   spec.add_development_dependency "sqlite3"
-  spec.add_development_dependency 'webmock', '~> 3.19', '>= 3.19.1'
+  spec.add_development_dependency 'webmock', '~> 3.24'
 end
