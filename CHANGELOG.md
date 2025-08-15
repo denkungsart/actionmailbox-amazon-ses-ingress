@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## unreleased
 
+## [0.2.0] (2025-08-15)
+
 - [BREAKING] Replace deprecated `:unprocessable_entity` with `:unprocessable_content`
 - [BREAKING] Set minimum rack version to `3.1.0`
 
