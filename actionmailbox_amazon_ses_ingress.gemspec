@@ -18,6 +18,7 @@ Gem::Specification.new do |spec|
   spec.metadata["allowed_push_host"] = "https://rubygems.pkg.github.com/denkungsart"
 
   spec.add_dependency "rails", ">= 7.0.7.2"
+  spec.add_dependency "rack", ">= 3.1.0"
   spec.add_dependency 'aws-sdk-sns', '~> 1.65'
   spec.add_dependency 'aws-sdk-s3', '~> 1.134'
 

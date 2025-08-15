@@ -9,7 +9,7 @@ module ActionMailbox
             head :ok
           else
             Rails.logger.error "SNS subscription confirmation request rejected."
-            head :unprocessable_entity
+            head :unprocessable_content
           end
         end
 
